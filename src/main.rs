@@ -1,3 +1,4 @@
+use clap::{App, Arg};
 use std::error::Error;
 use std::fmt;
 use trust_dns_resolver::TokioAsyncResolver;
@@ -61,8 +62,33 @@ pub async fn check_txt_record(
     Ok(false)
 }
 
-
 fn main() {
+    let matches = App::new("DNS TXT Record Checker")
+        .version("0.1.0")
+        .about("Checks if a specific TXT record exists for a given domain")
+        .arg(
+            Arg::new("domain")
+                .short('d')
+                .long("domain")
+                .value_name("DOMAIN")
+                .help("The domain to check")
+                .required(true)
+                .takes_value(true),
+        )
+        .arg(
+            Arg::new("record")
+                .short('r')
+                .long("record")
+                .value_name("RECORD")
+                .help("The TXT record to look for")
+                .required(true)
+                .takes_value(true),
+        )
+        .get_matches();
+
+    let domain_url = matches.value_of("domain").unwrap();
+    let expected_record = matches.value_of("record").unwrap();
+
     let rt = tokio::runtime::Runtime::new().unwrap();
 
     let resolver = match TokioAsyncResolver::tokio(ResolverConfig::default(), ResolverOpts::default()) {
@@ -73,20 +99,9 @@ fn main() {
         }
     };
 
-    // Define the domain_url and the expected record
-    let domain_url = "https://rotko.net";
-
-    // no match
-    //let expected_record = "e747830ab59ba99d4817ff11291811e6";
-
-    // match
-    let expected_record = "protonmail-verification=5efb90a51528f16d9ae4a23dd5faa9d5fa0a9221";
-
     match rt.block_on(check_txt_record(&resolver, domain_url, expected_record)) {
         Ok(true) => println!("Record found!"),
         Ok(false) => println!("Record not found."),
         Err(e) => println!("Error: {}", e),
     }
 }
-
-
