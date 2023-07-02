@@ -1,7 +1,9 @@
 [package]
 name = "dns-txt-checker"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
+authors = ["Rotko Networks <hq@rotko.net>"]
+description = "Checks if a specific TXT record exists for a given domain"
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }
