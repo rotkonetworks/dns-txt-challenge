@@ -4,6 +4,7 @@ use std::fmt;
 use trust_dns_resolver::TokioAsyncResolver;
 use trust_dns_resolver::config::{ResolverConfig, ResolverOpts};
 use trust_dns_resolver::error::ResolveError;
+// https://docs.rs/trust-dns-proto/latest/trust_dns_proto/
 use trust_dns_resolver::proto::rr::{RecordType, RData};
 use url::{ParseError, Url};
 
